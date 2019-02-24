@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( ColorTrackingCar )
+find_package( OpenCV REQUIRED )
+find_library(wiringPi_LIB wiringPi)
+add_executable( ColorTrackingCar ColorTrackingCar.cc )
+target_link_libraries( ColorTrackingCar  ${OpenCV_LIBS} ${wiringPi_LIB})
+add_definitions(-std=c++0x -L/home/pi/wiringPi/wiringPi -lwiringPi )

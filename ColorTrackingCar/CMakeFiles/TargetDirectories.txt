@@ -1,0 +1,3 @@
+/home/pi/ColorTrackingCar/CMakeFiles/rebuild_cache.dir
+/home/pi/ColorTrackingCar/CMakeFiles/edit_cache.dir
+/home/pi/ColorTrackingCar/CMakeFiles/ColorTrackingCar.dir
