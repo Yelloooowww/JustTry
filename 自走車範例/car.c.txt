@@ -1,0 +1,256 @@
+﻿#include "ASA_Lib.h"
+
+
+
+
+unsigned char  ASA_ID_r = 3, ASA_ID_l = 4,
+               SET_LSBYTE = 200, PUT_LSBYTE =2,
+               SET_BYTE = 2, PUT_BYTE = 1;
+
+
+unsigned int SET_MAXL = 600, SET_MAXR = 600,
+             PUT_INITL = -1, PUT_INITR = 1;
+
+
+
+
+char get=0;
+char lastget=100;
+void speed();
+
+
+void scanner();
+void set();
+
+
+
+
+
+
+
+
+int main()
+{
+
+
+          ASA_M128_set();
+          while(1)
+              {
+
+
+                    set();
+
+
+                   // while(lastget==get) //防彈跳
+                 //   {
+                        //scanner();
+                    //}
+                    scanner();
+                    speed();
+                        _delay_ms(50);
+
+
+           }
+
+
+}
+
+
+
+
+void  scanner()
+{
+  M128_DIO_set(200,0x0f,0,0);
+  _delay_ms(1);
+  M128_DIO_fgt(100,0x0f,0,&get);
+  _delay_ms(1);
+  printf("get=%d\n",get );
+}
+
+
+void  speed()
+{
+
+
+
+
+   switch(get) //黑色:0 白色:1
+   {
+
+
+
+
+//--------------------直走----------------------//
+
+
+        case 9:    // 1001 正常在軌道上 兩輪轉速相同
+        {
+                      SET_MAXL=600;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                      PUT_INITR=1;
+                        printf("Go straight\n");
+                break;
+        }
+
+
+                case 11:    // 1011 
+        {
+                      SET_MAXL=600;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                      PUT_INITR=1;
+                        printf("Go straight\n");
+                break;
+        }
+        case 13:    // 1101
+        {
+                      SET_MAXL=600;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                      PUT_INITR=1;
+                        printf("Go straight\n");
+                break;
+        }
+        case 0:    // 0000
+        {
+                      SET_MAXL=600;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                      PUT_INITR=1;
+                        printf("Go straight\n");
+                break;
+        }
+        
+
+
+ //---------------------右轉-------------------//
+        case 8:    // 1000 最左邊那顆在外
+        {
+                SET_MAXL=600;
+                SET_MAXR=100;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                PUT_INITR=-1;
+                        printf("Right\n");
+                break;
+        }
+
+
+        case 12:    // 1100 
+        {
+                SET_MAXL=600;
+                SET_MAXR=100;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                PUT_INITR=-1;
+                        printf("Right~~~~~~~\n");
+                break;
+        }
+        case 14:    // 1110 
+        {
+                SET_MAXL=600;
+                SET_MAXR=100;
+                PUT_LSBYTE=2;
+                PUT_INITL=-1;
+                PUT_INITR=-1;
+                        printf("Right~~~~~~~\n");
+                break;
+        }
+
+
+        
+
+
+
+
+//----------------------左轉----------------------//
+        case 1:    // 0001 最右邊那顆在外
+        {
+                SET_MAXL=100;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=1;
+                PUT_INITR=1;
+                        printf("Left\n");
+                  break;
+        }
+
+
+        case 3:    // 0011 最右邊那顆在外
+        {
+                SET_MAXL=100;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=1;
+                PUT_INITR=1;
+                        printf("Left~~~~~~~\n");
+                  break;
+        }
+        case 7:    // 0111 最右邊那顆在外
+        {
+                SET_MAXL=100;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=1;
+                PUT_INITR=1;
+                        printf("Left^^\n");
+                  break;
+        }
+
+
+
+
+
+
+//--------------------終點前-----------------------//
+
+
+
+
+        case 15:
+        {
+                SET_MAXL=600;
+                SET_MAXR=600;
+                PUT_LSBYTE=2;
+                PUT_INITL=1;
+        PUT_INITR=-1;
+        printf("Go Back\n");
+                break;
+        }
+
+
+    }
+
+
+    lastget=get;
+
+
+}
+
+
+
+
+
+
+void set()
+{
+
+
+        ASA_STP00_put(ASA_ID_l, SET_LSBYTE, SET_BYTE,&SET_MAXL);//左邊5 200 2 250 設定最大轉速
+
+
+        ASA_STP00_put(ASA_ID_r, SET_LSBYTE, SET_BYTE,&SET_MAXR);//右邊 4 200 2 250 設定最大轉速
+
+
+        ASA_STP00_put(ASA_ID_l, PUT_LSBYTE, PUT_BYTE,&PUT_INITL);//左邊 5 2 1 -1 設定轉動方向
+
+
+        ASA_STP00_put(ASA_ID_r, PUT_LSBYTE, PUT_BYTE,&PUT_INITR);//右邊 4 2 1  1 設定轉動方向
+
+
+}
